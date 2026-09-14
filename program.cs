@@ -104,4 +104,6 @@ namespace laba1
                  Console.WriteLine($"Произошла ошибка при сохранении: {e.Message}");
              }
          }
+        static void Main(string[] args)
+        {
     
