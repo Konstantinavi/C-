@@ -106,4 +106,38 @@ namespace laba1
          }
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            var files = FindAllTxt();
+            if (files.Length == 0)
+            {
+                Console.WriteLine($"Текстовые файлы (.txt) не найдены в папке {AppDomain.CurrentDomain.BaseDirectory}");
+                return;
+            }
+            Console.WriteLine("Выберите файл, из которого хотите получить цвета: ");
+            for (int i = 0; i < files.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {files[i].Name}");
+            }
+            int choice;
+            while (true)
+            {
+                Console.Write(">>> ");
+                string? input = Console.ReadLine();
+
+                if (int.TryParse(input, out choice) && choice >= 1 && choice <= files.Length)
+                {
+                    break;
+                }
+
+                Console.WriteLine("Некорректный ввод. Введите число от 1 до " + files.Length);
+            }
+            var selectedFile = files[choice - 1];
+            Console.WriteLine($"Выбран файл: {selectedFile.Name}.txt\nОбработка...");
+            string text = File.ReadAllText(selectedFile.FullPath);
+            var (coloredWords, colorsList) = FindColors(text);
+            Console.WriteLine($"Всего найдено упоминаний: {colorsList.Count}");
+            DrawColors(colorsList, selectedFile.Name);
+        }
+    }
+}
     
