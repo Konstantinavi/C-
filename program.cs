@@ -67,3 +67,41 @@ namespace laba1
             }
             return (coloredWords, colorsList);
         }
+        static void DrawColors(List<Color> colors, string outputFile)
+        {
+             if (colors.Count == 0)
+             {
+                 Console.WriteLine("Нет цветов для отрисовки.");
+                 return;
+             }
+             int squareSize = 40;
+             int columns = (int)Math.Ceiling(Math.Sqrt(colors.Count));
+             int rows = (int)Math.Ceiling((double)colors.Count / columns);
+             int bitmapWidth = columns * squareSize;
+             int bitmapHeight = rows * squareSize;
+             try
+             {
+                 using Bitmap bmp = new Bitmap(bitmapWidth, bitmapHeight);
+                 using Graphics g = Graphics.FromImage(bmp);
+                 g.Clear(Color.White);
+                 for (int i = 0; i < colors.Count; i++)
+                 {
+                     int col = i % columns;
+                     int row = i / columns;
+                     int x = col * squareSize;
+                     int y = row * squareSize;
+                     using var brush = new SolidBrush(colors[i]);
+                     g.FillRectangle(brush, x, y, squareSize, squareSize);
+                     g.DrawRectangle(Pens.LightGray, x, y, squareSize, squareSize);
+                 }
+
+                 string finalPath = outputFile + ".png";
+                 bmp.Save(finalPath, ImageFormat.Png);
+                 Console.WriteLine($"Изображение успешно сохранено: {Path.GetFullPath(finalPath)}");
+                 }
+             catch (Exception e)
+             {
+                 Console.WriteLine($"Произошла ошибка при сохранении: {e.Message}");
+             }
+         }
+    
