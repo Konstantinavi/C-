@@ -34,3 +34,10 @@ namespace laba1
             { "розов", Color.Pink },
             { "бирюз", Color.Turquoise },
         };
+        static (string Name, string FullPath)[] FindAllTxt()
+        {
+            string buildFolder = AppDomain.CurrentDomain.BaseDirectory;
+            return Directory.GetFiles(buildFolder, "*.txt", SearchOption.AllDirectories)
+                    .Select(path => (Path.GetFileNameWithoutExtension(path), path))
+                    .ToArray();
+        }
