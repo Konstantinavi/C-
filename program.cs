@@ -41,3 +41,29 @@ namespace laba1
                     .Select(path => (Path.GetFileNameWithoutExtension(path), path))
                     .ToArray();
         }
+        static (List<string> coloredWords, List<Color> colors) FindColors(string text)
+        {
+            var colorsList = new List<Color>();
+            var coloredWords = new List<string>();
+            string roots = string.Join("|", ColorMap.Keys.Select(Regex.Escape));
+            string suffixes = @"(?:ов|н|ян)?(?:еньк|оньк)?";
+            string endings = "ий|ый|ой|ая|ое|ее|ую|ого|его|их|ым|им|ыми|ими|ому|ему|ою|ею|ом|ем|ые|ие|ых|их|а|я|о|ы|и|ей";
+            var pattern = $"^({roots}){suffixes}({endings})?$";
+            var colorRegex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var wordsMatches = Regex.Matches(text, @"\b[\p{IsCyrillic}a-zA-Z]+\b");
+            foreach (Match wordMatch in wordsMatches)
+            {
+                 var match = colorRegex.Match(wordMatch.Value);
+                if (match.Success)
+                {
+                    string key = match.Groups[1].Value.ToLower();
+                    string wordLower = wordMatch.Value.ToLower();
+                    if (wordLower.Length < 2 && !ColorMap.ContainsKey(wordLower))
+                        continue;
+                    coloredWords.Add(wordLower);
+                    colorsList.Add(ColorMap[key]);
+                    Console.WriteLine($"Найдено слово: {wordLower}");
+                 }
+            }
+            return (coloredWords, colorsList);
+        }
